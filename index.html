@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Odin Etch-a-Sketch</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="https://kit.fontawesome.com/c91d7ef7d0.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="header">
+                <h1>Odin Etch-a-Sketch</h1>
+            </div>
+        </header>
+        <main>
+            <div class="content" id="grid">
+                
+            </div>
+        </main>
+        <footer>
+            <div class="footer">
+
+            </div>
+        </footer>
+    </div>
+</body>
+
+</html>
+
+<script>
+
+    for (let x = 0; x <16; x++) {
+
+        var div = document.createElement("div");
+        div.id = "gridrow-" + x;
+        document.getElementById("grid").appendChild(div);
+        console.log("Row Creation. This for loop has executed " + x + " times")
+
+        for (let y = 0; y <16; y++) {
+
+            var div2 = document.createElement("div");
+            div2.classList.add("cell");
+            div2.id= "cell-"+x+"-"+y;
+            document.getElementById("gridrow-"+x).appendChild(div2);
+            console.log("Cell Creation. This for loop has executed " + y + " times")
+
+        }
+
+    }
+
+
+
+</script>
