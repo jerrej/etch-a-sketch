@@ -17,8 +17,30 @@
             </div>
         </header>
         <main>
-            <div class="content" id="grid">
-                
+            <div class="content">
+                <div class="settings">
+                    <input id="style1" type="color">
+                    <button type="button">Colour Fill</button>
+                    <button type="button">Colour Grabber</button>
+                    <button type="button">Toggle Eraser</button>
+                    <button type="button">Toggle Shading</button>
+                    <button type="button">Toggle Lighten</button>
+                    <input type="range" id="gridsize" name="gridsize" min="1" max="64" value="16" step="1">
+                    <label for="cowbell">16 x 16</label>
+                    <button type="button">Toggle Grid Lines</button>
+                    <button type="button">Clear</button>
+                </div>
+                <div class="grid" id="grid">
+
+                </div>
+                <div class="settings">
+
+                </div>
+            </div>
+            <div class="content">
+                <div class="settings">
+
+                </div>
             </div>
         </main>
         <footer>
@@ -33,20 +55,20 @@
 
 <script>
 
-    for (let x = 0; x <16; x++) {
+    for (let x = 0; x < 16; x++) {
 
         var div = document.createElement("div");
-        div.id = "gridrow-"+x;
+        div.id = "gridrow-" + x;
         document.getElementById("grid").appendChild(div);
-        console.log("Row Creation. This for loop has executed "+x+" times")
+        console.log("Row Creation. This for loop has executed " + x + " times")
 
-        for (let y = 0; y <16; y++) {
+        for (let y = 0; y < 16; y++) {
 
             var div2 = document.createElement("div");
             div2.classList.add("cell");
-            div2.id= "cell-"+x+"-"+y;
-            document.getElementById("gridrow-"+x).appendChild(div2);
-            console.log("Cell Creation. This for loop has executed "+y+" times")
+            div2.id = "cell-" + x + "-" + y;
+            document.getElementById("gridrow-" + x).appendChild(div2);
+            console.log("Cell Creation. This for loop has executed " + y + " times")
 
         }
 
