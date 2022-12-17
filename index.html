@@ -36,9 +36,9 @@
     for (let x = 0; x <16; x++) {
 
         var div = document.createElement("div");
-        div.id = "gridrow-" + x;
+        div.id = "gridrow-"+x;
         document.getElementById("grid").appendChild(div);
-        console.log("Row Creation. This for loop has executed " + x + " times")
+        console.log("Row Creation. This for loop has executed "+x+" times")
 
         for (let y = 0; y <16; y++) {
 
@@ -46,7 +46,7 @@
             div2.classList.add("cell");
             div2.id= "cell-"+x+"-"+y;
             document.getElementById("gridrow-"+x).appendChild(div2);
-            console.log("Cell Creation. This for loop has executed " + y + " times")
+            console.log("Cell Creation. This for loop has executed "+y+" times")
 
         }
 
