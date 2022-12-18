@@ -19,7 +19,7 @@
         <main>
             <div class="content">
                 <div class="settings">
-                    <input id="style1" type="color">
+                    <input id="color-input" type="color">
                     <button type="button"><i class="fa-solid fa-pencil"></i></button>
                     <button type="button"><i class="fa-solid fa-eraser"></i></button>
                     <button type="button"><i class="fa-solid fa-eye-dropper"></i></button>
@@ -32,7 +32,7 @@
                 <div class="grid" id="grid">
 
                 </div>
-                <div class="settings">
+                <div class="settings" id="settings">
 
                 </div>
             </div>
@@ -54,25 +54,56 @@
 
 <script>
 
-    for (let x = 0; x < 16; x++) {
+    let gridContainer = document.getElementById('grid');
+    let gridSettings = document.getElementById('settings');
+    let gridArray = [];
+    let mouseEvent = {};
 
-        var div = document.createElement("div");
-        div.id = "gridrow-" + x;
-        document.getElementById("grid").appendChild(div);
+    for (let x = 1; x < 17; x++) {
+
+        let gridRow = document.createElement("div");
+        gridRow.id = "gridrow-" + x;
+        gridContainer.appendChild(gridRow);
+        gridArray[x] = [];
+
         console.log("Row Creation. This for loop has executed " + x + " times")
 
-        for (let y = 0; y < 16; y++) {
+        for (let y = 1; y < 17; y++) {
 
-            var div2 = document.createElement("div");
-            div2.classList.add("cell");
-            div2.id = "cell-" + x + "-" + y;
-            document.getElementById("gridrow-" + x).appendChild(div2);
-            console.log("Cell Creation. This for loop has executed " + y + " times")
+            let gridCell = document.createElement("div");
+            gridCell.classList.add("cell");
+            gridCell.id = "cell-" + x + "-" + y;
+            gridRow.addEventListener("mouseover", draw);
+            document.getElementById("gridrow-" + x).appendChild(gridCell);
+            gridArray[x][y] = gridCell;
+
+            console.log("Cell Creation. This for loop has executed " + y + " times");
+            console.log(gridArray[x][y]);
 
         }
 
     }
 
+    gridContainer.addEventListener("mousedown", () => mouseEvent.mouseDown = true)
+    gridContainer.addEventListener("mouseup", () => delete mouseEvent.mouseDown)
 
+    function canDraw() {
+        return mouseEvent.mouseDown;
+    }
+
+    function draw(e) {
+
+        if (canDraw()) {
+            e.fromElement.classList.add('draw');
+            e.preventDefault();
+            console.log("Drawing");
+        }
+
+    }
+
+    gridContainer.onmousedown = (e) => {
+        isPainting = true;
+        e.preventDefault();
+    };
 
 </script>
