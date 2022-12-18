@@ -80,7 +80,7 @@ body {
     width: 200px;
 }
 
-#color-input {
+#colorpicker {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -91,12 +91,12 @@ body {
     cursor: pointer;
 }
 
-#color-input::-webkit-color-swatch {
+#colorpicker::-webkit-color-swatch {
     border-radius: 15px;
     border: none;
 }
 
-#color-input::-moz-color-swatch {
+#colorpicker::-moz-color-swatch {
     border-radius: 15px;
     border: none;
 }

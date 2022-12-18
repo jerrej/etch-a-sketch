@@ -19,15 +19,15 @@
         <main>
             <div class="content">
                 <div class="grid-settings" id="grid-settings">
-                    <input id="color-input" type="color">
-                    <button id="pencil-button" type="button"><i class="fa-solid fa-pencil"></i></button>
-                    <button id="eraser-button" type="button"><i class="fa-solid fa-eraser"></i></button>
+                    <input id="colorpicker" type="color">
+                    <button id="pencilbutton" type="button"><i class="fa-solid fa-pencil"></i></button>
+                    <button id="eraserbutton" type="button"><i class="fa-solid fa-eraser"></i></button>
                     <button type="button"><i class="fa-solid fa-eye-dropper"></i></button>
                     <button type="button"><i class="fa-solid fa-fill-drip"></i></button>
                     <button type="button"><i class="fa-solid fa-trash-can"></i></button>
                     <button type="button"><i class="fa-solid fa-table-cells"></i></button>
-                    <input type="range" id="gridsize" name="gridsize" min="1" max="64" value="16" step="1">
-                    <label for="cowbell">16 x 16</label>
+                    <input id="sizeslider" type="range" name="gridsize" min="1" max="64" value="16" step="1">
+                    <label for="sizeSlider">16 x 16</label>
                 </div>
                 <div class="grid-wrapper">
                     <div class="grid-container" draggable="false">
@@ -38,10 +38,10 @@
                     <input id="color-input" type="color">
                     <button id="pencil-button" type="button"><i class="fa-solid fa-pencil"></i></button>
                     <button id="eraser-button" type="button"><i class="fa-solid fa-eraser"></i></button>
-                    <button type="button"><i class="fa-solid fa-eye-dropper"></i></button>
-                    <button type="button"><i class="fa-solid fa-fill-drip"></i></button>
-                    <button type="button"><i class="fa-solid fa-trash-can"></i></button>
-                    <button type="button"><i class="fa-solid fa-table-cells"></i></button>
+                    <button type="dropper-button"><i class="fa-solid fa-eye-dropper"></i></button>
+                    <button type="drip-button"><i class="fa-solid fa-fill-drip"></i></button>
+                    <button type="clear-button"><i class="fa-solid fa-trash-can"></i></button>
+                    <button type="grid-button"><i class="fa-solid fa-table-cells"></i></button>
                     <input type="range" id="gridsize" name="gridsize" min="1" max="64" value="16" step="1">
                     <label for="cowbell">16 x 16</label>
                 </div>
@@ -59,7 +59,7 @@
 
 <script>
     const DEFAULT_COLOR = ''
-    const DEFAULT_MODE = 'color'
+    const DEFAULT_MODE = 'pencil'
     const DEFAULT_SIZE = 16
 
     let currentColor = DEFAULT_COLOR
@@ -71,7 +71,7 @@
     }
 
     function setCurrentMode(newMode) {
-        highlightButton(newMode)
+        /*highlightButton(newMode)*/
         currentMode = newMode;
     }
 
@@ -79,7 +79,20 @@
         currentSize = newSize
     }
 
-    const gridContainer = document.querySelector('.grid-container');
+    const colorPicker = document.getElementById('colorpicker')
+    const pencilBtn = document.getElementById('pencilbutton')
+    const eraserBtn = document.getElementById('eraserbutton')
+    const gridContainer = document.querySelector('.grid-container')
+
+    colorPicker.oninput = (e) => setCurrentColor(e.target.value)
+    pencilBtn.onclick = () => setCurrentMode('pencil')
+    eraserBtn.onclick = () => setCurrentMode('eraser')
+    /*sizeSlider.onmousemove = (e) => updateSizeValue(e.target.value)*/
+    /*sizeSlider.onchange = (e) => changeSize(e.target.value)*/
+
+    let mouseDown = false
+    document.body.onmousedown = () => (mouseDown = true)
+    document.body.onmouseup = () => (mouseDown = false)
 
     function newGrid(size) {
         gridContainer.style.gridTemplateColumns = `repeat(${size}, 1fr)`
@@ -92,129 +105,143 @@
         }
     }
 
-    function drawGridLines() {    
-        const allItems = document.querySelectorAll(`.grid-element`);
-        const rightItems = document.querySelectorAll(`.grid-element:nth-child(${currentSize}n)`);
-        const bottomItems = Array.from(allItems).slice(-`${currentSize}`);
+    function drawGridLines() {
+        const allItems = document.querySelectorAll(`.grid-element`)
+        const rightItems = document.querySelectorAll(`.grid-element:nth-child(${currentSize}n)`)
+        const bottomItems = Array.from(allItems).slice(-`${currentSize}`)
 
         for (let i = 0; i < allItems.length; i++) {
-            allItems[i].classList.toggle('border-top');
-            allItems[i].classList.toggle('border-left');
+            allItems[i].classList.toggle('border-top')
+            allItems[i].classList.toggle('border-left')
         }
-        
+
         for (let i = 0; i < rightItems.length; i++) {
-            rightItems[i].classList.toggle('border-right');
+            rightItems[i].classList.toggle('border-right')
         }
 
         for (let i = 0; i < bottomItems.length; i++) {
-            bottomItems[i].classList.toggle('border-bottom');
+            bottomItems[i].classList.toggle('border-bottom')
         }
     }
 
     function toggleGridLines() {
-        const allItems = document.querySelectorAll(`.grid-element`);
-        
+        const allItems = document.querySelectorAll(`.grid-element`)
+
         for (let i = 0; i < allItems.length; i++) {
-            allItems[i].classList.toggle('border-none');
+            allItems[i].classList.toggle('border-none')
         }
     }
 
-
-    newGrid(currentSize);
-    drawGridLines();
-    toggleGridLines();
-    toggleGridLines();
-
-/* Starting from scratch again, drawing outside of the box and loop is not properly set up
-
-    // Grid Container
-    const gridContainer = document.querySelector('.grid-container');
-
-    // Grid Size
-    let gridSize = 16;
-
-    let gridArray = [];
-
-    function newGrid() {
-
-        for (let x = 0; x < gridSize; x++) {
-
-            let col = document.createElement("div");
-            col.id = "gridcol-" + x;
-            col.classList.add('grid-col');
-            gridArray[x] = [];
-
-            for (let y = 0; y < gridSize; y++) {
-
-                const row = document.createElement('div');
-                row.id = "grid-cell-" + x + "-" + y;
-                row.classList.add('grid-row');
-                row.setAttribute('draggable', 'false');
-                col.appendChild(row);
-            }
-
-            gridContainer.appendChild(col);
-        }
-    }
-
-    newGrid();
-
-    gridContainer.addEventListener("mouseover", draw);
-
-    gridContainer.addEventListener("mousedown", () => mouseEvent.mouseDown = true)
-    gridContainer.addEventListener("mouseup", () => delete mouseEvent.mouseDown)
-
-    function canDraw() {    
-        return mouseEvent.mouseDown;
-    }
-
-    let drawingMode = "pencil";
+    gridContainer.addEventListener('mouseover', draw)
+    gridContainer.addEventListener('mousedown', draw)
+    
 
     function draw(e) {
-
-        mouseEvent.mouseOver = true;
-
-        if (canDraw()) {
-
-            switch (drawingMode) {
-
-                case "pencil":
-                    console.log(mouseEvent.mouseDown)
-                    e.fromElement.style.background = document.getElementById("color-input").value;
-                    e.preventDefault();
-                    console.log("Drawing");
-                    break;
-
-                case "eraser":
-                    e.fromElement.classList.add('erase');
-                    e.preventDefault();
-                    console.log("Drawing");
-                    break;
-
+        console.log("DRAWING");
+        if (e.type === 'mouseover' && !mouseDown) return
+            if (currentMode === 'pencil') {
+                e.target.style.backgroundColor = currentColor
+            } else if (currentMode === 'eraser') {
+                e.target.style.backgroundColor = '#fefefe'
             }
+    }
 
+
+    newGrid(currentSize)
+    drawGridLines()
+    toggleGridLines()
+    toggleGridLines()
+
+    /* Starting from scratch again, drawing outside of the box and loop is not properly set up
+    
+        // Grid Container
+        const gridContainer = document.querySelector('.grid-container');
+    
+        // Grid Size
+        let gridSize = 16;
+    
+        let gridArray = [];
+    
+        function newGrid() {
+    
+            for (let x = 0; x < gridSize; x++) {
+    
+                let col = document.createElement("div");
+                col.id = "gridcol-" + x;
+                col.classList.add('grid-col');
+                gridArray[x] = [];
+    
+                for (let y = 0; y < gridSize; y++) {
+    
+                    const row = document.createElement('div');
+                    row.id = "grid-cell-" + x + "-" + y;
+                    row.classList.add('grid-row');
+                    row.setAttribute('draggable', 'false');
+                    col.appendChild(row);
+                }
+    
+                gridContainer.appendChild(col);
+            }
         }
-
-    }
-
-    gridContainer.onmousedown = (e) => {
-        isPainting = true;
-        e.preventDefault();
-    }
-
-    document.getElementById("color-input").onchange = function () {
-
-        console.log(this.id + " changed to " + this.value);
-    }
-
-    document.getElementById("pencil-button").onchange = function () {
-        drawingMode = "pencil";
-    console.log(this.id + " changed to " + drawingMode);
-    }
-
-    document.getElementById("eraser-button").onchange = function () {
-        drawingMode = "eraser",
-    console.log(this.id + " changed to " + drawingMode);
-    }
-*/
+    
+        newGrid();
+    
+        gridContainer.addEventListener("mouseover", draw);
+    
+        gridContainer.addEventListener("mousedown", () => mouseEvent.mouseDown = true)
+        gridContainer.addEventListener("mouseup", () => delete mouseEvent.mouseDown)
+    
+        function canDraw() {    
+            return mouseEvent.mouseDown;
+        }
+    
+        let drawingMode = "pencil";
+    
+        function draw(e) {
+    
+            mouseEvent.mouseOver = true;
+    
+            if (canDraw()) {
+    
+                switch (drawingMode) {
+    
+                    case "pencil":
+                        console.log(mouseEvent.mouseDown)
+                        e.fromElement.style.background = document.getElementById("color-input").value;
+                        e.preventDefault();
+                        console.log("Drawing");
+                        break;
+    
+                    case "eraser":
+                        e.fromElement.classList.add('erase');
+                        e.preventDefault();
+                        console.log("Drawing");
+                        break;
+    
+                }
+    
+            }
+    
+        }
+    
+        gridContainer.onmousedown = (e) => {
+            isPainting = true;
+            e.preventDefault();
+        }
+    
+        document.getElementById("color-input").onchange = function () {
+    
+            console.log(this.id + " changed to " + this.value);
+        }
+    
+        document.getElementById("pencil-button").onchange = function () {
+            drawingMode = "pencil";
+        console.log(this.id + " changed to " + drawingMode);
+        }
+    
+        document.getElementById("eraser-button").onchange = function () {
+            drawingMode = "eraser",
+        console.log(this.id + " changed to " + drawingMode);
+        }
+    */
 </script>
