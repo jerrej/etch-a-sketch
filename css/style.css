@@ -39,31 +39,28 @@ body {
     display: grid;
     height: 640px;
     width: 640px;
-    background-color: white;
-
+    background-color: #fff;
 }
 
 .grid-element {
     flex: 1;
     user-select: none;
-    text-align: center;
 }
 
-
 .border-top {
-    border-top: 1px solid #000;
+    border-top: 1px solid #b4b4b4;
 }
 
 .border-bottom {
-    border-bottom: 1px solid #000;
+    border-bottom: 1px solid #b4b4b4;
 }
 
 .border-left {
-    border-left: 1px solid #000;
+    border-left: 1px solid #b4b4b4;
 }
 
 .border-right {
-    border-right: 1px solid #000;
+    border-right: 1px solid #b4b4b4;
 }
 
 .border-none {
@@ -71,7 +68,6 @@ body {
 }
 
 .grid-settings {
-    flex: 1;
     display: flex;
     align-items: center;
     flex-direction: column;

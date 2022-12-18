@@ -22,12 +22,10 @@
                     <input id="colorpicker" type="color">
                     <button id="pencilbutton" type="button"><i class="fa-solid fa-pencil"></i></button>
                     <button id="eraserbutton" type="button"><i class="fa-solid fa-eraser"></i></button>
-                    <button type="button"><i class="fa-solid fa-eye-dropper"></i></button>
-                    <button type="button"><i class="fa-solid fa-fill-drip"></i></button>
-                    <button type="button"><i class="fa-solid fa-trash-can"></i></button>
+                    <button id="clearbutton" type="button"><i class="fa-solid fa-trash-can"></i></button>
                     <button id="gridbutton" type="button"><i class="fa-solid fa-table-cells"></i></button>
                     <input id="sizeslider" type="range" name="gridsize" min="1" max="64" value="16" step="1">
-                    <label for="sizeSlider">16 x 16</label>
+                    <label id="sizevalue" for="sizeslider">16 x 16</label>
                 </div>
                 <div class="grid-wrapper">
                     <div class="grid-container" draggable="false">
@@ -35,14 +33,12 @@
                     </div>
                 </div>
                 <div class="grid-settings" id="grid-settings" style="visibility:hidden;">
-                    <input id="color-input" type="color">
-                    <button id="pencil-button" type="button"><i class="fa-solid fa-pencil"></i></button>
-                    <button id="eraser-button" type="button"><i class="fa-solid fa-eraser"></i></button>
-                    <button type="dropper-button"><i class="fa-solid fa-eye-dropper"></i></button>
-                    <button type="drip-button"><i class="fa-solid fa-fill-drip"></i></button>
-                    <button type="clear-button"><i class="fa-solid fa-trash-can"></i></button>
-                    <button type="grid-button"><i class="fa-solid fa-table-cells"></i></button>
-                    <input type="range" id="gridsize" name="gridsize" min="1" max="64" value="16" step="1">
+                    <input id="colorpicker" type="color">
+                    <button id="pencilbutton" type="button"><i class="fa-solid fa-pencil"></i></button>
+                    <button id="eraserbutton" type="button"><i class="fa-solid fa-eraser"></i></button>
+                    <button id="clearbutton" type="button"><i class="fa-solid fa-trash-can"></i></button>
+                    <button id="gridbutton" type="button"><i class="fa-solid fa-table-cells"></i></button>
+                    <input id="sizeslider" type="range" name="gridsize" min="1" max="64" value="16" step="1">
                     <label for="cowbell">16 x 16</label>
                 </div>
             </div>
@@ -58,7 +54,9 @@
 </html>
 
 <script>
-    const DEFAULT_COLOR = 'black'
+
+    // Variables
+    const DEFAULT_COLOR = '#000'
     const DEFAULT_MODE = 'pencil'
     const DEFAULT_SIZE = 16
 
@@ -71,7 +69,6 @@
     }
 
     function setCurrentMode(newMode) {
-        /*highlightButton(newMode)*/
         currentMode = newMode;
     }
 
@@ -79,24 +76,34 @@
         currentSize = newSize
     }
 
+    // Elements
     const colorPicker = document.getElementById('colorpicker')
     const pencilBtn = document.getElementById('pencilbutton')
     const eraserBtn = document.getElementById('eraserbutton')
+    const clearBtn = document.getElementById('clearbutton')
     const gridBtn = document.getElementById('gridbutton')
+    const sizeSlider = document.getElementById('sizeslider')
+    const sizeValue = document.getElementById('sizevalue')
     const gridContainer = document.querySelector('.grid-container')
 
+    // Event Listeners
     colorPicker.oninput = (e) => setCurrentColor(e.target.value)
     pencilBtn.onclick = () => setCurrentMode('pencil')
     eraserBtn.onclick = () => setCurrentMode('eraser')
+    clearBtn.onclick = () => reloadGrid();
     gridBtn.onclick = () => toggleGridLines();
-    /*sizeSlider.onmousemove = (e) => updateSizeValue(e.target.value)*/
-    /*sizeSlider.onchange = (e) => changeSize(e.target.value)*/
+    sizeSlider.onmousemove = (e) => updateSizeValue(e.target.value)
+    sizeSlider.onchange = (e) => changeSize(e.target.value)
 
     let mouseDown = false
     document.body.onmousedown = () => (mouseDown = true)
     document.body.onmouseup = () => (mouseDown = false)
+    gridContainer.addEventListener('mouseover', draw)
+    gridContainer.addEventListener('mousedown', draw)
 
-    function newGrid(size) {
+
+    // Functions
+    function createGrid(size) {
         gridContainer.style.gridTemplateColumns = `repeat(${size}, 1fr)`
         gridContainer.style.gridTemplateRows = `repeat(${size}, 1fr)`
 
@@ -105,6 +112,16 @@
             gridElement.classList.add('grid-element')
             gridContainer.appendChild(gridElement)
         }
+    }
+
+    function clearGrid() {
+        gridContainer.innerHTML = ''
+    }
+
+    function reloadGrid() {
+        clearGrid()
+        createGrid(currentSize)
+        drawGridLines()
     }
 
     function drawGridLines() {
@@ -134,27 +151,31 @@
         }
     }
 
-    gridContainer.addEventListener('mouseover', draw)
-    gridContainer.addEventListener('mousedown', draw)
-    
-
     function draw(e) {
         console.log("DRAWING");
         if (e.type === 'mouseover' && !mouseDown) return
-            if (currentMode === 'pencil') {
-                e.target.style.backgroundColor = currentColor
-            } else if (currentMode === 'eraser') {
-                e.target.style.backgroundColor = '#fefefe'
-            }
+        if (currentMode === 'pencil') {
+            e.target.style.backgroundColor = currentColor
+        } else if (currentMode === 'eraser') {
+            e.target.style.backgroundColor = '#fefefe'
+        }
     }
 
+    function changeSize(value) {
+        setCurrentSize(value)
+        updateSizeValue(value)
+        reloadGrid();
+    }
 
-    newGrid(currentSize)
+    function updateSizeValue(value) {
+        sizeValue.innerHTML = `${value} x ${value}`
+    }
+
+    // Execute on init
+    createGrid(currentSize)
     drawGridLines()
-    toggleGridLines()
-    toggleGridLines()
 
-    /* Starting from scratch again, drawing outside of the box and loop is not properly set up
+    /* Abandoned code, starting from sratch again.
     
         // Grid Container
         const gridContainer = document.querySelector('.grid-container');
