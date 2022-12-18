@@ -18,10 +18,10 @@
         </header>
         <main>
             <div class="content">
-                <div class="settings">
+                <div class="grid-settings" id="grid-settings">
                     <input id="color-input" type="color">
-                    <button type="button"><i class="fa-solid fa-pencil"></i></button>
-                    <button type="button"><i class="fa-solid fa-eraser"></i></button>
+                    <button id="pencil-button" type="button"><i class="fa-solid fa-pencil"></i></button>
+                    <button id="eraser-button" type="button"><i class="fa-solid fa-eraser"></i></button>
                     <button type="button"><i class="fa-solid fa-eye-dropper"></i></button>
                     <button type="button"><i class="fa-solid fa-fill-drip"></i></button>
                     <button type="button"><i class="fa-solid fa-trash-can"></i></button>
@@ -29,16 +29,21 @@
                     <input type="range" id="gridsize" name="gridsize" min="1" max="64" value="16" step="1">
                     <label for="cowbell">16 x 16</label>
                 </div>
-                <div class="grid" id="grid">
+                <div class="grid-wrapper">
+                    <div class="grid-container" draggable="false">
 
+                    </div>
                 </div>
-                <div class="settings" id="settings">
-
-                </div>
-            </div>
-            <div class="content">
-                <div class="settings">
-
+                <div class="grid-settings" id="grid-settings">
+                    <input id="color-input" type="color">
+                    <button id="pencil-button" type="button"><i class="fa-solid fa-pencil"></i></button>
+                    <button id="eraser-button" type="button"><i class="fa-solid fa-eraser"></i></button>
+                    <button type="button"><i class="fa-solid fa-eye-dropper"></i></button>
+                    <button type="button"><i class="fa-solid fa-fill-drip"></i></button>
+                    <button type="button"><i class="fa-solid fa-trash-can"></i></button>
+                    <button type="button"><i class="fa-solid fa-table-cells"></i></button>
+                    <input type="range" id="gridsize" name="gridsize" min="1" max="64" value="16" step="1">
+                    <label for="cowbell">16 x 16</label>
                 </div>
             </div>
         </main>
@@ -53,50 +58,141 @@
 </html>
 
 <script>
+    const DEFAULT_COLOR = ''
+    const DEFAULT_MODE = 'color'
+    const DEFAULT_SIZE = 16
 
-    let gridContainer = document.getElementById('grid');
-    let gridSettings = document.getElementById('settings');
-    let gridArray = [];
-    let mouseEvent = {};
+    let currentColor = DEFAULT_COLOR
+    let currentMode = DEFAULT_MODE
+    let currentSize = DEFAULT_SIZE
 
-    for (let x = 1; x < 17; x++) {
+    function setCurrentColor(newColor) {
+        currentColor = newColor
+    }
 
-        let gridRow = document.createElement("div");
-        gridRow.id = "gridrow-" + x;
-        gridContainer.appendChild(gridRow);
-        gridArray[x] = [];
+    function setCurrentMode(newMode) {
+        highlightButton(newMode)
+        currentMode = newMode;
+    }
 
-        console.log("Row Creation. This for loop has executed " + x + " times")
+    function setCurrentSize(newSize) {
+        currentSize = newSize
+    }
 
-        for (let y = 1; y < 17; y++) {
+    const gridContainer = document.querySelector('.grid-container');
 
-            let gridCell = document.createElement("div");
-            gridCell.classList.add("cell");
-            gridCell.id = "cell-" + x + "-" + y;
-            gridRow.addEventListener("mouseover", draw);
-            document.getElementById("gridrow-" + x).appendChild(gridCell);
-            gridArray[x][y] = gridCell;
+    function newGrid(size) {
+        gridContainer.style.gridTemplateColumns = `repeat(${size}, 1fr)`
+        gridContainer.style.gridTemplateRows = `repeat(${size}, 1fr)`
 
-            console.log("Cell Creation. This for loop has executed " + y + " times");
-            console.log(gridArray[x][y]);
+        for (let i = 0; i < size * size; i++) {
+            const gridElement = document.createElement('div')
+            gridElement.classList.add('grid-element')
+            gridContainer.appendChild(gridElement)
+        }
+    }
 
+    function drawGridLines() {    
+        const allItems = document.querySelectorAll(`.grid-element`);
+        const rightItems = document.querySelectorAll(`.grid-element:nth-child(${currentSize}n)`);
+        const bottomItems = Array.from(allItems).slice(-`${currentSize}`);
+
+        for (let i = 0; i < allItems.length; i++) {
+            allItems[i].classList.toggle('border-top');
+            allItems[i].classList.toggle('border-left');
+        }
+        
+        for (let i = 0; i < rightItems.length; i++) {
+            rightItems[i].classList.toggle('border-right');
         }
 
+        for (let i = 0; i < bottomItems.length; i++) {
+            bottomItems[i].classList.toggle('border-bottom');
+        }
     }
+
+    function toggleGridLines() {
+        const allItems = document.querySelectorAll(`.grid-element`);
+        
+        for (let i = 0; i < allItems.length; i++) {
+            allItems[i].classList.toggle('border-none');
+        }
+    }
+
+
+    newGrid(currentSize);
+    drawGridLines();
+    toggleGridLines();
+    toggleGridLines();
+
+/* Starting from scratch again, drawing outside of the box and loop is not properly set up
+
+    // Grid Container
+    const gridContainer = document.querySelector('.grid-container');
+
+    // Grid Size
+    let gridSize = 16;
+
+    let gridArray = [];
+
+    function newGrid() {
+
+        for (let x = 0; x < gridSize; x++) {
+
+            let col = document.createElement("div");
+            col.id = "gridcol-" + x;
+            col.classList.add('grid-col');
+            gridArray[x] = [];
+
+            for (let y = 0; y < gridSize; y++) {
+
+                const row = document.createElement('div');
+                row.id = "grid-cell-" + x + "-" + y;
+                row.classList.add('grid-row');
+                row.setAttribute('draggable', 'false');
+                col.appendChild(row);
+            }
+
+            gridContainer.appendChild(col);
+        }
+    }
+
+    newGrid();
+
+    gridContainer.addEventListener("mouseover", draw);
 
     gridContainer.addEventListener("mousedown", () => mouseEvent.mouseDown = true)
     gridContainer.addEventListener("mouseup", () => delete mouseEvent.mouseDown)
 
-    function canDraw() {
+    function canDraw() {    
         return mouseEvent.mouseDown;
     }
 
+    let drawingMode = "pencil";
+
     function draw(e) {
 
+        mouseEvent.mouseOver = true;
+
         if (canDraw()) {
-            e.fromElement.classList.add('draw');
-            e.preventDefault();
-            console.log("Drawing");
+
+            switch (drawingMode) {
+
+                case "pencil":
+                    console.log(mouseEvent.mouseDown)
+                    e.fromElement.style.background = document.getElementById("color-input").value;
+                    e.preventDefault();
+                    console.log("Drawing");
+                    break;
+
+                case "eraser":
+                    e.fromElement.classList.add('erase');
+                    e.preventDefault();
+                    console.log("Drawing");
+                    break;
+
+            }
+
         }
 
     }
@@ -104,6 +200,21 @@
     gridContainer.onmousedown = (e) => {
         isPainting = true;
         e.preventDefault();
-    };
+    }
 
+    document.getElementById("color-input").onchange = function () {
+
+        console.log(this.id + " changed to " + this.value);
+    }
+
+    document.getElementById("pencil-button").onchange = function () {
+        drawingMode = "pencil";
+    console.log(this.id + " changed to " + drawingMode);
+    }
+
+    document.getElementById("eraser-button").onchange = function () {
+        drawingMode = "eraser",
+    console.log(this.id + " changed to " + drawingMode);
+    }
+*/
 </script>
