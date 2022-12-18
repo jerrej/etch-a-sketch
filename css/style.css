@@ -39,7 +39,11 @@ body {
 }
 
 #grid .cell:hover {
-    background-color: black;
+
+}
+
+#grid .draw {
+    background-color: black;    
 }
 
 .settings {
@@ -52,7 +56,7 @@ body {
     width: 200px;
 }
 
-#style1 {
+#color-input {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -63,12 +67,12 @@ body {
     cursor: pointer;
 }
 
-#style1::-webkit-color-swatch {
+#color-input::-webkit-color-swatch {
     border-radius: 15px;
     border: none;
 }
 
-#style1::-moz-color-swatch {
+#color-input::-moz-color-swatch {
     border-radius: 15px;
     border: none;
 }
