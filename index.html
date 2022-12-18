@@ -25,7 +25,7 @@
                     <button type="button"><i class="fa-solid fa-eye-dropper"></i></button>
                     <button type="button"><i class="fa-solid fa-fill-drip"></i></button>
                     <button type="button"><i class="fa-solid fa-trash-can"></i></button>
-                    <button type="button"><i class="fa-solid fa-table-cells"></i></button>
+                    <button id="gridbutton" type="button"><i class="fa-solid fa-table-cells"></i></button>
                     <input id="sizeslider" type="range" name="gridsize" min="1" max="64" value="16" step="1">
                     <label for="sizeSlider">16 x 16</label>
                 </div>
@@ -82,11 +82,13 @@
     const colorPicker = document.getElementById('colorpicker')
     const pencilBtn = document.getElementById('pencilbutton')
     const eraserBtn = document.getElementById('eraserbutton')
+    const gridBtn = document.getElementById('gridbutton')
     const gridContainer = document.querySelector('.grid-container')
 
     colorPicker.oninput = (e) => setCurrentColor(e.target.value)
     pencilBtn.onclick = () => setCurrentMode('pencil')
     eraserBtn.onclick = () => setCurrentMode('eraser')
+    gridBtn.onclick = () => toggleGridLines();
     /*sizeSlider.onmousemove = (e) => updateSizeValue(e.target.value)*/
     /*sizeSlider.onchange = (e) => changeSize(e.target.value)*/
 
